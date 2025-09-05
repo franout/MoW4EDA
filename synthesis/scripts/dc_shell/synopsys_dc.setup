@@ -1,0 +1,52 @@
+#
+#
+#		    Dc_Shell and Design_Analyzer
+#
+#	The variables in this file define the behavior of many parts
+#	of the Synopsys Synthesis Tools.  Upon installation, they should 
+#	be reviewed and modified to fit your site's needs.  Each engineer
+#	can have a .synopsys file in his/her home directory or current
+#	directory to override variable settings in this file.  
+#
+#  	Each logical grouping of variables is commented as to their 
+#	nature and effect on the Synthesis Commands.  Examples of
+#	variable groups are the Compile Variable Group, which affects 
+#	the designs produced by the COMPILE command, and the Schematic 
+#	Variable Group, which affects the output of the create_schematic
+#	command.
+#
+#	You can type "man <group_name>_variables" in dc_shell or 
+#	design_analyzer to get help about a group of variables.
+#	For instance, to get help about the "system" variable group, 
+#	type "help system_variables".  You can also type
+#	"man <variable name>", to get help on the that variable's 
+#	group.
+#
+
+#
+#       Site-Specific Variables
+#
+#       These are the variables that are most commonly changed at a
+#       specific site, either upon installation of the Synopsys software,
+#       or by specific engineers in their local .synopsys files.
+#
+#
+# from the System Variable Group 
+set link_force_case  "check_reference"
+
+set link_library   $env(MoW4EDA_SYNTH_LIB)
+set physical_library ""
+set search_path  $env(MoW4EDA_SYNTH_LIB_PATH)
+
+set target_library  $env(MoW4EDA_SYNTH_LIB)
+
+set synthetic_library  ""
+set command_log_file  "./command.log"
+set designer  "Franout"
+set company  "PoliTO"
+set find_converts_name_lists  "false"
+
+set symbol_library  $env(MoW4EDA_SYNTH_LIB)
+
+
+set_host_options -max_cores 16

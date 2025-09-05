@@ -1,0 +1,27 @@
+-ALLOWREDEFINITION
+
+-elaborate		# do not simulate (run ncsim to simulate) 
+#-noupdate		# re-elaborate without compiling any source files
+-default_ext verilog
++libext+.sv+.v+.V
+
+
+${MoW4EDA_SIMULATION_LIB_GL}
+## gate level design # the same read_netlist -noabort $env(MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH)/$env(MoW4EDA_DESIGN).v
+${MoW4EDA_SIMULATION_GL_DESIGN}
+# testbench (atpg generated)
+${MoW4EDA_ATPG_DIR_TESTBENCHES}/testbench_${MoW4EDA_DESIGN}_scan.v
+
++tetramax 
++module_delay_zero
++define+tetramax=1
++define+tmax_parallel=1
++define+tmax_vcde=1
++nowarnNODINM
++ncaccess+r+w+c
+
++nc64bit
++ncaccess+rwc
+-delta_sequdp_delay
+
+-ncsimargs -use_ieee_dumpport_ids

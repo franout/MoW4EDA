@@ -1,0 +1,277 @@
+#!/bin/bash
+
+# default setup for MoW4EDA framework, modify as needed
+# this file is sourced by the main scripts
+
+
+## tool selection
+export MoW4EDA_FSIM_TOOL="vc_zoix"
+export MoW4EDA_ATPG_TOOL="tmax2"
+export MoW4EDA_SIM_TOOL="vcs"
+export MoW4EDA_POWER_TOOL="pt"
+export MoW4EDA_SLACK_GENERATOR_TOOL="pt_shell"
+export MoW4EDA_SYN_TOOL="dc_shell"
+
+export MoW4EDA_DESIGN="systolic_array"
+
+## fault model tmax like
+##("Stuck" "Iddq" "Transition" "Path_delay" "Bridging" "Dynamic_Bridging" "Dual_transition_Bridging" "Hold_time" "IDDQ_bridging")
+export MoW4EDA_FAULT_MODEL="SDF"
+
+export MoW4EDA_DESIGN_DIR=${MoW4EDA_WORK_DIR}/design/${MoW4EDA_DESIGN}/
+# *** Workspace hierarchy ***
+#
+export MoW4EDA_FSIM_DIR=${MoW4EDA_WORK_DIR}/fault_simulation/${MoW4EDA_FSIM_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_SIM_DIR=${MoW4EDA_WORK_DIR}/simulation/${MoW4EDA_SIM_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_SYN_DIR=${MoW4EDA_WORK_DIR}/synthesis/${MoW4EDA_SYN_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_ATPG_DIR=${MoW4EDA_WORK_DIR}/atpg/${MoW4EDA_ATPG_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_POWER_DIR=${MoW4EDA_WORK_DIR}/power/${MoW4EDA_POWER_TOOL}/${MoW4EDA_DESIGN}/
+
+
+export MoW4EDA_DEFAULT_PROCESSES=8
+
+export MoW4EDA_LOGS_DIR=${MoW4EDA_WORK_DIR}/logs/
+
+## synthesis related
+export MoW4EDA_SYN_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/synthesis/scripts/${MoW4EDA_SYN_TOOL}
+export MoW4EDA_SYNTH_LIB_PATH=${MoW4EDA_WORK_DIR}/design/libs/saed_14nm/
+export MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH=${MoW4EDA_SYN_DIR}/synthesized/
+export MoW4EDA_SYNTH_LIB=${MoW4EDA_SYNTH_LIB_PATH}/saed14rvt_tt0p8v25c.db
+export MoW4EDA_SYN_LOG_DIR=${MoW4EDA_LOGS_DIR}/${MoW4EDA_SYN_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_SYNTH_TOP_LEVEL_NAME="SystolicArray_M_MMA1_K_MMA8"
+export MoW4EDA_SYNTH_CLOCK_VALUE_NS="20"
+
+export MoW4EDA_SLACK_GENERATOR_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/synthesis/scripts/${MoW4EDA_SLACK_GENERATOR_TOOL}/
+export MoW4EDA_SLACK_GENERATOR_TOOL_DIR=${MoW4EDA_WORK_DIR}/synthesis/${MoW4EDA_SLACK_GENERATOR_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_SLACK_GENERATOR_TOOL_LOG_DIR=${MoW4EDA_LOGS_DIR}/${MoW4EDA_SLACK_GENERATOR_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_SLACK_FILE=${MoW4EDA_SLACK_GENERATOR_TOOL_DIR}/${MoW4EDA_DESIGN}_slack_timing.rpt
+
+## atpg 
+export MoW4EDA_ATPG_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/atpg/scripts/${MoW4EDA_ATPG_TOOL}
+export MoW4EDA_ATPG_LIB=${MoW4EDA_SYNTH_LIB_PATH}/saed14nm_rvt.v
+export MoW4EDA_ATPG_LOG_DIR=${MoW4EDA_LOGS_DIR}/${MoW4EDA_ATPG_TOOL}/${MoW4EDA_DESIGN}/
+export MoW4EDA_ATPG_ABORT_LIMIT="10000"
+
+export MoW4EDA_ATPG_STIL_DIR=${MoW4EDA_ATPG_DIR}/stil/
+export MoW4EDA_ATPG_FAULT_LIST_DIR=${MoW4EDA_ATPG_DIR}/fault_list/
+export MoW4EDA_ATPG_DIR_TESTBENCHES=${MoW4EDA_ATPG_DIR}/testbenches/
+export MoW4EDA_ATPG_TB_HIERARCHICAL_PATH="SystolicArray_M_MMA1_K_MMA8_test/dut"
+
+## simulation  
+export MoW4EDA_SIMULATION_UTILS_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/simulation/scripts/utils
+export MoW4EDA_SIMULATION_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/simulation/scripts/${MoW4EDA_SIM_TOOL}
+export MoW4EDA_SIMULATION_LIB_GL=${MoW4EDA_SYNTH_LIB_PATH}/saed14nm_rvt.v
+export MoW4EDA_SIMULATION_GL_DESIGN=${MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH}/${MoW4EDA_DESIGN}.v
+export MoW4EDA_SIMULATION_ELABORATION_VCD_SCRIPT=${MoW4EDA_WORK_DIR}/simulation/elaboration/${MoW4EDA_SIM_TOOL}/dump_evcd_${MoW4EDA_DESIGN}.cfg
+export MoW4EDA_SIMULATION_ELABORATION_SCRIPT=${MoW4EDA_WORK_DIR}/simulation/elaboration/${MoW4EDA_SIM_TOOL}/elaborate_${MoW4EDA_DESIGN}_gate_lfsr
+export MoW4EDA_SIMULATION_EXECUTABLE=${MoW4EDA_SIM_DIR}/work/${MoW4EDA_DESIGN}_simulation_lfsr
+export MoW4EDA_SIMULATION_PATH_EVCD=${MoW4EDA_SIM_DIR}/results/
+export MoW4EDA_SIMULATION_LOG_DIR=${MoW4EDA_LOGS_DIR}/${MoW4EDA_SIM_TOOL}/${MoW4EDA_DESIGN}
+export MoW4EDA_SIMULATION_TIME="1ms"
+export MoW4EDA_FSIM=true
+
+## application 
+export MoW4EDA_APPLICATION_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/application/scripts/
+export MoW4EDA_APPLICATION_OUTPUTS_DIR=${MoW4EDA_WORK_DIR}/application/outputs
+export MoW4EDA_APPLICATION_INTERNAL_RUNNER=${MoW4EDA_WORK_DIR}/application/scripts/application_internal_runner.sh
+export MoW4EDA_APPLICATION_RUN_DIR_LOG=${MoW4EDA_LOGS_DIR}/application/${MoW4EDA_DESIGN}
+export MoW4EDA_APPLICATION_COMPILE_SCRIPT=${MoW4EDA_APPLICATION_SCRIPTS_DIR}/compile_application.sh
+
+## custom verilator-oriented 
+if [[ ${MoW4EDA_SIM_TOOL} == "verilator" ]] ; then 
+export MoW4EDA_VERILATOR_TRACE=true
+fi 
+
+
+#enable/disable hard copy of files/folder or link mode 
+export MoW4EDA_COPY_DIR_LINK_MODE=true
+
+
+## fsim
+export MoW4EDA_FSIM_MODEL=${MoW4EDA_FAULT_MODEL}
+export MoW4EDA_FSIM_LOG_DIR=${MoW4EDA_LOGS_DIR}/${MoW4EDA_FSIM_TOOL}/${MoW4EDA_DESIGN}/${MoW4EDA_FSIM_MODEL}
+export MoW4EDA_FSIM_RESULTS_DIR=${MoW4EDA_FSIM_DIR}"/results"
+export MoW4EDA_FSIM_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/fault_simulation/scripts/${MoW4EDA_FSIM_TOOL}
+export MoW4EDA_FSIM_FAULT_LIST_DIR=${MoW4EDA_WORK_DIR}/fault_simulation/fault_lists/${MoW4EDA_FSIM_TOOL}/${MoW4EDA_FSIM_MODEL}
+export MoW4EDA_FSIM_FAULT_LIST_FILE=${MoW4EDA_FSIM_FAULT_LIST_DIR}/${MoW4EDA_DESIGN}_atpg.sff
+#export MoW4EDA_FSIM_STROBE_TYPE="full_strobe"
+export MoW4EDA_FSIM_STROBE_TYPE=""
+export MoW4EDA_FSIM_FAULT_LIST_TEMPLATE=${MoW4EDA_WORK_DIR}/fault_simulation/fault_lists/${MoW4EDA_FSIM_TOOL}/template_tetramax.sff
+export MoW4EDA_FSIM_STROBE_FILE_DIR=${MoW4EDA_FSIM_SCRIPTS_DIR}/strobe/functional
+export MoW4EDA_FSIM_STROBE_FILE=${MoW4EDA_FSIM_STROBE_FILE_DIR}/${MoW4EDA_DESIGN}.fstrobe
+export MoW4EDA_FSIM_ELABORATION_FILE_DIR=${MoW4EDA_FSIM_SCRIPTS_DIR}/elaboration/
+export MoW4EDA_FSIM_ELABORATION_INTERNAL_STROBER_FILE=${MoW4EDA_FSIM_SCRIPTS_DIR}/elaboration/${MoW4EDA_DESIGN}_strober.v
+export MoW4EDA_FSIM_ELABORATION_TOP_LEVEL_NAME="SystolicArray_M_MMA1_K_MMA8"
+export MoW4EDA_FSIM_EVCD_TOP_LEVEL_NAME="TOP.SystolicArray"
+export MoW4EDA_FSIM_LIB_GL=${MoW4EDA_SIMULATION_LIB_GL}
+export MoW4EDA_FSIM_IMPORT_HIERARCHICAL_PATH_TO_REMOVE=""
+export MoW4EDA_FSIM_PATTERNS_DIR=${MoW4EDA_FSIM_DIR}"/inputs"
+if [[ "${MoW4EDA_FSIM_MODEL}" == "SDF" ]] ; then 
+#export MoW4EDA_FSIM_DELAY_COMPILE_OPT="+delay_mode_path  +typdelays +sdf_file+${MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH}/${MoW4EDA_DESIGN}_timing.sdf +sdfverbose +sdf_path+${MoW4EDA_FSIM_ELABORATION_TOP_LEVEL_NAME} +transport_path_delays +transport_int_delays"
+export MoW4EDA_FSIM_DELAY_COMPILE_OPT="+delay_mode_fault"
+else 
+export MoW4EDA_FSIM_DELAY_COMPILE_OPT="+delay_mode_fault"
+fi 
+
+# extra options for fgen 
+if [[ "${MoW4EDA_FSIM_TOOL}" == "zoix" ]] ; then 
+export MoW4EDA_FSIM_FGEN_EXTRA_OPT="+nocollapse -uncontrollability +warnreturn+0"
+fi
+
+if [ -n "${MoW4EDA_FSIM_STROBE_TYPE}" ] ; then 
+    echo "Custom Strober ${MoW4EDA_FSIM_ELABORATION_INTERNAL_STROBER_FILE}"
+    # check correctness 
+    if [[ "${MoW4EDA_FSIM_FAULT_LIST_FILE}" != *"${MoW4EDA_FSIM_STROBE_TYPE}"* ]]; then
+        echo "Please set MoW4EDA_FSIM_FAULT_LIST_FILE according to the strobe type"
+        echo "MoW4EDA_FSIM_FAULT_LIST_FILE = ${MoW4EDA_FSIM_FAULT_LIST_FILE}"
+        echo "MoW4EDA_FSIM_STROBE_TYPE = ${MoW4EDA_FSIM_STROBE_TYPE}"
+        exit 1
+    fi 
+
+fi 
+
+## FOLDER CREATION AND FILE CHECK 
+
+if [[ ! -d "${MoW4EDA_FSIM_PATTERNS_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_FSIM_PATTERNS_DIR}"
+mkdir -p ${MoW4EDA_FSIM_PATTERNS_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_SLACK_GENERATOR_SCRIPTS_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SLACK_GENERATOR_SCRIPTS_DIR}"
+mkdir -p ${MoW4EDA_SLACK_GENERATOR_SCRIPTS_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_SLACK_GENERATOR_TOOL_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SLACK_GENERATOR_TOOL_DIR}"
+mkdir -p ${MoW4EDA_SLACK_GENERATOR_TOOL_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_SLACK_GENERATOR_TOOL_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SLACK_GENERATOR_TOOL_LOG_DIR}"
+mkdir -p ${MoW4EDA_SLACK_GENERATOR_TOOL_LOG_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_FSIM_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_FSIM_LOG_DIR}"
+mkdir -p ${MoW4EDA_FSIM_LOG_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_FSIM_RESULTS_DIR}" || ! -L ${MoW4EDA_FSIM_RESULTS_DIR} ]] ; then 
+echo "Creating folder ${MoW4EDA_FSIM_RESULTS_DIR}"
+mkdir -p ${MoW4EDA_FSIM_RESULTS_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}"
+mkdir -p ${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}
+fi 
+
+
+if [[ ! -L "${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR}" ]] ; then 
+echo "Linking ${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR} to ${MoW4EDA_ATPG_FAULT_LIST_DIR}"
+ln -s ${MoW4EDA_ATPG_FAULT_LIST_DIR} ${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR} 
+fi 
+
+
+if [[ ! -d "${MoW4EDA_PLOT_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_PLOT_LOG_DIR}"
+mkdir -p ${MoW4EDA_PLOT_LOG_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_SIMULATION_PATH_EVCD}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SIMULATION_PATH_EVCD}"
+mkdir -p ${MoW4EDA_SIMULATION_PATH_EVCD}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_APPLICATION_RUN_DIR_LOG}" ]] ; then 
+echo "Creating folder ${MoW4EDA_APPLICATION_RUN_DIR_LOG}"
+mkdir -p ${MoW4EDA_APPLICATION_RUN_DIR_LOG}
+fi 
+
+if [[ ! -d "${MoW4EDA_APPLICATION_OUTPUTS_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_APPLICATION_OUTPUTS_DIR}"
+mkdir -p ${MoW4EDA_APPLICATION_OUTPUTS_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_COMPILE_APPLICATION_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_COMPILE_APPLICATION_LOG_DIR}"
+mkdir -p ${MoW4EDA_COMPILE_APPLICATION_LOG_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_SIMULATION_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SIMULATION_LOG_DIR}"
+mkdir -p ${MoW4EDA_SIMULATION_LOG_DIR}
+fi 
+
+if [[ ! -f "${MoW4EDA_SIMULATION_ELABORATION_SCRIPT}" && ${MoW4EDA_SIM_TOOL} != "verilator" ]] ; then 
+echo "Error: elaboration script for simulation ${MoW4EDA_SIMULATION_ELABORATION_SCRIPT} does not exist"
+exit 
+fi 
+
+if [[ ! -d "${MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH}"
+mkdir -p ${MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_ATPG_STIL_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_ATPG_STIL_DIR}"
+mkdir -p ${MoW4EDA_ATPG_STIL_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_ATPG_FAULT_LIST_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_ATPG_FAULT_LIST_DIR}"
+mkdir -p ${MoW4EDA_ATPG_FAULT_LIST_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_ATPG_DIR_TESTBENCHES}" ]] ; then 
+echo "Creating folder ${MoW4EDA_ATPG_DIR_TESTBENCHES}"
+mkdir -p ${MoW4EDA_ATPG_DIR_TESTBENCHES}
+fi 
+
+if [[ ! -d "${MoW4EDA_ATPG_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_ATPG_LOG_DIR}"
+mkdir -p ${MoW4EDA_ATPG_LOG_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_SYN_LOG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SYN_LOG_DIR}"
+mkdir -p ${MoW4EDA_SYN_LOG_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_FSIM_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_FSIM_DIR}"
+mkdir -p ${MoW4EDA_FSIM_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_SIM_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SIM_DIR}"
+mkdir -p ${MoW4EDA_SIM_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_SYN_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_SYN_DIR}"
+mkdir -p ${MoW4EDA_SYN_DIR}
+fi 
+
+if [[ ! -d "${MoW4EDA_ATPG_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_ATPG_DIR}"
+mkdir -p ${MoW4EDA_ATPG_DIR}
+fi 
+
+
+if [[ ! -d "${MoW4EDA_POWER_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_POWER_DIR}"
+mkdir -p ${MoW4EDA_POWER_DIR}
+fi 
+
+# For seeing the creation of the folder 
+sleep 1

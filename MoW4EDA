@@ -1,0 +1,193 @@
+#!/usr/bin/env bash
+
+cd `dirname $0`
+script_dir=${PWD}
+cd - &>/dev/null
+script_name=`basename $0`
+
+#-----------------------------------------------
+# FIXED VALUES
+#-----------------------------------------------
+export MoW4EDA_WORK_DIR=${script_dir}
+
+#-----------------------------------------------
+# DEFAULTS VALUES
+#-----------------------------------------------
+
+DEFAULT_SETUP=${MoW4EDA_WORK_DIR}/setup_default
+DEFAULT_SETUP_TOOLS=${MoW4EDA_WORK_DIR}/setup_tools
+
+#-----------------------------------------------
+# LOCAL SCRIPTS
+#-----------------------------------------------
+
+abs_path() {
+   cd `dirname ${1}`
+   echo ${PWD}/`basename ${1}`
+   cd - &>/dev/null
+   return 0
+}
+
+# return the escaped version of the string passed as parameter
+escape_str() {
+   echo "${1}"|sed -e 's/[]\/()$*.^|[]/\\&/g'
+}
+
+# read from the stdin and remove the string passed as parameter
+remove_str() {
+   sed 's/'"`escape_str "${1}"`"'//g'
+}
+
+# read from the stdin and replace the string passed as first parameter 
+# with the second one
+replace_str() {
+   sed 's/'"`escape_str "${1}"`"'/'"`escape_str "${2}"`"'/g'
+}
+
+show_internal_scripts() {
+sort <<EOF
+abs_path
+escape_str
+remove_str
+replace_str
+show_internal_scripts
+show_setup
+show_scripts
+EOF
+}
+
+show_setup() {	
+	echo "env variables:";
+	export -p|awk '{ if ( $3 ~ /^MoW4EDA_/ ) print $3; }' |sort;
+}
+
+show_scripts() {
+   echo "Internal scripts:"
+   show_internal_scripts
+   echo
+   echo "Executable scripts from ${MoW4EDA_WORK_DIR}:"
+   work_dir_escaped=`escape_str "${MoW4EDA_WORK_DIR}/"`;
+   for s in `find ${MoW4EDA_WORK_DIR} \( -type d -o -type l \) -name "scripts"`; do
+      t="${s//[^\/]/}"
+      find ${s}/ -maxdepth 1 -executable ! -type d  ! -name "*~" | xargs -I{} echo ${#t} {}
+   done | sort -k1,1n -k2,2 | 
+   awk '{print $2}' |
+   sed 's/'"${work_dir_escaped}"'//g' 
+}
+
+usage() {
+   echo "${script_name} - MoW4EDA shell"
+   echo " "
+   echo "usage: ${script_name} options"
+   echo " "
+   echo "options:"
+   echo "[-setup <PATH>]           load the specified setup file (default setup: <work-dir>/setup_default)"
+   echo " "
+   echo "-h, --help                show brief help"
+   echo " "
+   echo "MoW4EDA shell internal scripts:"
+   show_internal_scripts
+   echo " "
+}
+
+
+#-----------------------------------------------
+# MAIN
+#-----------------------------------------------
+
+setup_opt=false
+
+# GET OPTIONS
+
+while test $# -gt 0; do
+   case "$1" in
+      -h|--help)
+         usage        
+         exit 0
+         ;;
+
+    
+      -setup)
+         if ${setup_opt}; then
+            echo "-setup: option redundant" >&2
+            exit 1
+         fi
+         shift
+         if [[ $# -gt 0  &&  ! $1 =~ ^- ]]; then
+            setup=$1
+            setup_opt=true
+         else
+           echo "-setup: no argument specified" >&2
+           exit 1
+         fi
+         shift
+         ;;
+
+      *)
+         break
+         ;;
+   esac
+done
+
+# save and throw args (startup script may corrupt them)
+# remaining args will be passed to the bash shell
+
+remaining_args=( "$@" )
+shift $#
+
+# setting parameters (get absolute paths / check files)
+
+
+if ! ${setup_opt}; then
+   setup=${DEFAULT_SETUP}
+fi
+if [ ! -e "${setup}" ]; then
+   echo "Error: ${setup} not found." >&2
+   exit 1
+fi
+setup=`abs_path ${setup}`
+
+# source setup and check configuration
+
+. ${setup}
+
+## setup tools 
+if [[ ! -f "${DEFAULT_SETUP_TOOLS}" ]] ; then 
+echo  "Using default tools, ${DEFAULT_SETUP_TOOLS} does not exist "
+else 
+. ${DEFAULT_SETUP_TOOLS}
+fi 
+
+lib_dir=${MoW4EDA_ROOT}/tools/lib
+export LD_LIBRARY_PATH=${lib_dir}:${LD_LIBRARY_PATH}
+
+# add workspace scripts dir to pathls
+
+scripts_paths=$(
+   for s in `find ${MoW4EDA_WORK_DIR}/ -maxdepth 5 \( -type d -o -type l \) -name "scripts*"`; do
+      t="${s//[^\/]/}"
+      echo "${#t} $s"
+   done |
+   sort -n |
+   awk 'BEGIN{ORS=":"}{print $2}')
+PATH=${scripts_paths}:${PATH}
+
+export PATH
+
+export -f abs_path
+export -f escape_str
+export -f remove_str
+export -f replace_str
+export -f show_setup
+export -f show_scripts
+export -f show_internal_scripts
+
+
+if [[ "$(lsb_release -i | cut -f2 )"=="Ubuntu" ]] ; then 
+## if ubuntu os 
+bash --rcfile <(echo "source "${HOME}/.bashrc";export PS1='[MoW4EDA]\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '")
+
+else
+export PS1='[MoW4EDA] \u@\h \W> '
+exec bash "${remaining_args[@]}"
+fi

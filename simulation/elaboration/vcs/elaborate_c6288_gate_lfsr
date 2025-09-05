@@ -1,0 +1,35 @@
+-V 
+-xlrm
+-sverilog 
+-Mdirectory=${MoW4EDA_SIM_DIR}/work
+-Mlib=dir=${MoW4EDA_SIM_DIR}/work
+-override_timescale=1ns/1ps  
++libext+.sv
++vcs+initreg+random
+## library 
+## the same read_netlist -noabort $env(MoW4EDA_ATPG_LIB)
+-v ${MoW4EDA_SIMULATION_LIB_GL}
+## gate level design # the same read_netlist -noabort $env(MoW4EDA_SYNTH_SYNTHESIZED_LIB_PATH)/$env(MoW4EDA_DESIGN).v
+${MoW4EDA_SIMULATION_GL_DESIGN}
+# testbench (atpg generated)
+${MoW4EDA_DESIGN_DIR}/testbench/lfsr.v
+${MoW4EDA_DESIGN_DIR}/testbench/testbench.sv 
+-V 
+-debug_access+r+cbk+drivers 
++dumpports+mxccn
+-debug_access+all
++nocelldefinepli+0
++dumpports+mxccn
++tetramax
++delay_mode_zero
+-debug_access+all
++define+tetramax+tmax_parallel+tmax_vcde+FUNCTIONAL
+-Xrerolloff
+
+
+-debug_region+cell
+-debug_region+cellports
+
++optconfigfile+${MoW4EDA_SIMULATION_ELABORATION_VCD_SCRIPT}
+
+-o ${MoW4EDA_SIMULATION_EXECUTABLE}
