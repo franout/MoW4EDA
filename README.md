@@ -23,7 +23,7 @@ Configure the workspace by running the `prepare_workspace.sh` script located in 
 To activate the workspace, source the `MoW4EDA.sh` script located in the root of the workspace:
 
 ```bash
-    source MoW4EDA.sh
+   $ ./MoW4EDA.sh
 ```
 
 ***Note: Replace `MoW4EDA.sh` with the name you provided during the installation if you changed it.***
