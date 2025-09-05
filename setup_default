@@ -71,8 +71,11 @@ export MoW4EDA_SIMULATION_TIME="1ms"
 export MoW4EDA_FSIM=true
 
 ## application 
-export MoW4EDA_APPLICAITON_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/application/scripts/
-export MoW4EDA_APPLICATION_VERILATOR_VCD_FILE_PATH=${MoW4EDA_WORK_DIR}/application/output
+export MoW4EDA_APPLICATION_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/application/scripts/
+export MoW4EDA_APPLICATION_OUTPUTS_DIR=${MoW4EDA_WORK_DIR}/application/outputs
+export MoW4EDA_APPLICATION_INTERNAL_RUNNER=${MoW4EDA_WORK_DIR}/application/scripts/application_internal_runner.sh
+export MoW4EDA_APPLICATION_RUN_DIR_LOG=${MoW4EDA_LOGS_DIR}/application/${MoW4EDA_DESIGN}
+export MoW4EDA_APPLICATION_COMPILE_SCRIPT=${MoW4EDA_APPLICATION_SCRIPTS_DIR}/compile_application.sh
 
 ## custom verilator-oriented 
 if [[ ${MoW4EDA_SIM_TOOL} == "verilator" ]] ; then 
@@ -190,6 +193,10 @@ echo "Creating folder ${MoW4EDA_APPLICATION_RUN_DIR_LOG}"
 mkdir -p ${MoW4EDA_APPLICATION_RUN_DIR_LOG}
 fi 
 
+if [[ ! -d "${MoW4EDA_APPLICATION_OUTPUTS_DIR}" ]] ; then 
+echo "Creating folder ${MoW4EDA_APPLICATION_OUTPUTS_DIR}"
+mkdir -p ${MoW4EDA_APPLICATION_OUTPUTS_DIR}
+fi 
 
 if [[ ! -d "${MoW4EDA_COMPILE_APPLICATION_LOG_DIR}" ]] ; then 
 echo "Creating folder ${MoW4EDA_COMPILE_APPLICATION_LOG_DIR}"
