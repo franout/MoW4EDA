@@ -5,7 +5,7 @@
 
 
 ## tool selection
-export MoW4EDA_FSIM_TOOL="zoix"
+export MoW4EDA_FSIM_TOOL="vc_zoix"
 export MoW4EDA_ATPG_TOOL="tmax2"
 export MoW4EDA_SIM_TOOL="vcs"
 export MoW4EDA_POWER_TOOL="pt"
