@@ -1,0 +1,18 @@
+#!/bin/bash
+
+###### EDA TOOLS SETUP ######
+# This script sets up the environment for various EDA tools required for the flow.
+
+###### LICENSE ######
+module load license/default
+
+###### SYNOPSYS TOOLS ######
+module load synopsys/syn/2022.12
+module load synopsys/tmax/2022.12
+
+module load synopsys/primepwr/2022.12          
+module load synopsys/primetime/2023.12-SP4     
+module load synopsys/vcs/2023.03-SP2
+module load synopsys/verdi/2023.12-SP1
+#module load synopsys/zoix/2022.06-SP2
+module load synopsys/zoix/2024.09

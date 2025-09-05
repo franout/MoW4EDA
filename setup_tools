@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+## setup for NEEDED tools used in the flow
+## adding yosys, sv2v
+export SV2V_PATH="$HOME/sv2v/bin"
+
+export VERILATOR_ROOT=/software/verilator_v5.018/
+export VERILATOR_TOP=/software/verilator_v5.018/
+export YOSYS=/software/yosys/bin/
+export NETLIST_FAULT_INJECTOR_TOP=${MoW4EDA_NETLIST_FI_PATH}
+
+export PATH=${SV2V_PATH}:${PATH}:${YOSYS}:${VERILATOR_TOP}/bin
+
+export PYTHON="python3.11"
+export PYTHONPATH=${PYTHONPATH}
+
+source eda_tools_setup
+
+export ZOIX_HOME="${ZOIXHOME}"
+## check for  sv2v
+echo "Checking for sv2v tool"
+if [[ ! $(type -P "sv2v") ]] ; then 
+echo "Error - missing sv2v tool"
+fi 
+
+## check for yosys
+if [[ ! $(type -P "yosys") ]] ; then 
+echo "Error - missing yosys tool"
+fi 
+
+## check for verilator
+if [[ ! $(type -P "${VERILATOR_TOP}/bin/verilator_bin") ]] ; then 
+echo "Error - missing verilator tool"
+else 
+version=$(${VERILATOR_TOP}/bin/verilator_bin -version | cut -d " " -f2)
+## check the verilator version v4.224
+if [[ "$version" != "5.018" ]] ; then 
+echo "Error - wrong verilator version, you need the v4.224"
+fi 
+fi
+
