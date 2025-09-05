@@ -29,7 +29,7 @@ The workspace is designed to be flexible, allowing users to add or remove tools 
 The choice of bash scripting is due to its wide availability on Unix-like systems supported by EDA vendors.
 
 ### Modularization 
-The workspace is organized into modules, each representing a specific EDA tool or functionality. 
+The workspace is organized into modules, each representing a specific flow for a specific EDA tool. 
 Users can easily add new modules by creating new folders and scripts, following the existing structure.
 
 ### Customization
@@ -69,7 +69,7 @@ Users can customize the workspace by modifying the configuration files and scrip
     chmod +x scripts/run_atpg.sh
     ```
 
-3. **Create a Related Folder for the Functionality**  
+3. **Create a Related Folder for the Flow**  
     Create a new folder in the workspace root to house all files related to the module. For example:
     ```bash
     mkdir atpg
@@ -98,9 +98,9 @@ Users can customize the workspace by modifying the configuration files and scrip
     ```bash
     chmod +x atpg/scripts/run_internal_atpg.sh
     ```
-    This folder will contain all scripts and resources specific to the ATPG functionality. For example, you can include scripts for preprocessing input files, running the ATPG tool, and postprocessing results.
+    This folder will contain all scripts and resources specific to the ATPG flow. For example, you can include scripts for preprocessing input files, running the ATPG tool, and postprocessing results.
 
-5. **Create the EDA Tool Folder in the Functionality Folder**  
+5. **Create the EDA Tool Folder in the Flow Folder**  
     When the workspace is activated for the first time, the environment will automatically create the necessary folder structure. For example:
     ```bash
     mkdir -p atpg/eda_tool/input
@@ -121,7 +121,7 @@ The `atpg` folder serves as a reference for structuring new modules. It includes
 By following this structure, users can ensure consistency and maintainability across all modules.
 
 # Contributing
-Contributions are welcome! Please fork the repository and submit a pull request with your changes. Make sure to follow the existing code style and include tests for any new functionality.
+Contributions are welcome! Please fork the repository and submit a pull request with your changes. Make sure to follow the existing code style and include tests for any new flow.
 
 # License
 This project is licensed under the MIT License. See the LICENSE file for details.
