@@ -37,5 +37,5 @@ find "$(pwd)" -type f -exec sed -i "s/MoW4EDA/${name}/g" {} +
 echo "Substitution complete: 'MoW4EDA' replaced with '${name}' in all files."
 
 # Rename the main script file
-mv "$(pwd)/MoW4EDA" "$(pwd)/${name}.sh"
-echo "Renamed 'MoW4EDA' to '${name}.sh'"
+mv "$(pwd)/MoW4EDA" "$(pwd)/${name}-ENV.sh"
+echo "Renamed 'MoW4EDA' to '${name}-ENV.sh'"
