@@ -1,0 +1,191 @@
+#############################################################################################
+#####################
+#####################
+#####################
+#####################               TESTABILITY (TOGGLE)
+#####################
+#####################
+#####################
+#####################
+#############################################################################################
+## output format
+set(var=[defines],progress.enable=[1])
+set(var=[defines],progress.limit=[60])
+set(var=[defines],progress.style=[long])
+set(var=[fsim],summary=[all|test])
+## avoid copy of everything
+set(var=[defines],files=[link])
+set(var=[defines],shell=[/usr/bin/bash])
+## setup simulation 
+set(var=[coats],scramble=[1])
+set(var=[queue], name=[mytestqueue], parts=[$processes], method=[native])
+set(var=[resources], messages=[debug],queue.all=[mytestqueue])
+# Enable Fault Manager Verbosity 
+set(var=[resources], messages=[all])
+# Enhanced Synopsys Format 
+set(var=[defines], format=[standard])
+## generate all possible faults
+set(var=[fdef], maxfault=[0])
+# Disable Hyperfaults 
+set(var=[fsim],hyperfault=[0])
+set(var=[defines],test_replace=[1])
+set(var=[fsim],osc_info=[1])
+set(var=[defines], toggle.propagation=[1])
+set(var=[fdef],method=[fr],abort=[error])
+## clean the design 
+removedesign(remove=[no])
+## fstobe file
+set(var=[fdef],method=[fgen],fr.collapse=[1]) # no collapse
+set(var=[fdef], method=[fgen],extra_options=[${SDENV_FSIM_FGEN_EXTRA_OPT}])
+set(var=[defines], enable_controllability=[1])
+set(var=[defines], showattributes.enable=[1],showattributes.list=[NO, NC])
+set(var=[coats],method=[allf])
+#set(var=[defines],model=[transition])
+set(var=[fdef],fstrobe=[${SDENV_FSIM_STROBE_FILE}])
+set(var=[fdef], statusimport=[1])
+set(var=[fdef],method=[fgen],fr.incdir=[${SDENV_FSIM_DIR}/image_functional])
+# Load design into the fault manager 
+design(directory=[./],name=[${SDENV_DESIGN}],faultset=[enable],queue=[mytestqueue])
+
+set(var=[coats],method=[allf])
+set(var=[coats],nt_marking=[test])
+set(var=[coats],extra_options=[+ignoreresistvalue])
+#set(var=[coats],status=[NA,ND,DT,PT,AP,NP,P0,P1,AN,AX,TP])
+set(var=[coats],tenacity.ignore_clock_toggle=[1])
+### fault dictionary options 
+#set(var=[defines],dictionary.enable=[1])
+#set(var=[fsim], dictionary.values=[all])
+set(var=[fsim],countonce=[0])
+#set(var=[defines], dictionary.flatten=[0])
+#set(var=[defines], dictionary.values.base=[hex])
+#set(var=[fsim],maxhard=[0])
+#set(var=[fsim],maxpot=[0])
+
+set(var=[coats], reconvergence_check=[full])
+set(var=[coats],tenacity.mode=[normalize])
+
+set(var=[defines],fsim_extra_options=[+vcs+initregsync+0])
+#FAULT SET 
+#faultset(name=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],method=[fgen]) 
+faultset(name=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],method=[sff], input=[${SDENV_FSIM_FAULT_LIST_FILE}])
+## clean up the results
+deltst(result=[${SDENV_DESIGN}_testability_${evcd_name}])
+
+set(var=[defines], toggle.propagation=[1])
+set(var=[coats], track_obs_ctl=[1])
+
+addtst(test=[${SDENV_DESIGN}_testability_${evcd_name}],
+dut.stim=[${SDENV_FSIM_ELABORATION_TOP_LEVEL_NAME},
+${SDENV_FSIM_EVCD_TOP_LEVEL_NAME}],
+fault.inject.time=[$STROBE_OFFSET],
+stim.limit.mismatch=[100],
+stimtype=[vcd], 
+limit.osc=[25],
+oscd=[all],   
+stim.verify=[1],
+stim_options=[+vcd+clk+${SDENV_FSIM_ELABORATION_TOP_LEVEL_NAME}.clk,+vcd+priority+stimulus],
+zdetect=[0], 
+#trans.delay=[15],
+stim=[${evcd_path}]     )
+
+
+coats(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],test=[${SDENV_DESIGN}_testability_${evcd_name}])
+testability(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],test=[${SDENV_DESIGN}_testability_${evcd_name}],file=[$result_dir/testability_analysis.txt])
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],type=[toggle],collapseoff=[1], test=[${SDENV_DESIGN}_testability_${evcd_name}],file=[$result_dir/testability_analysis_toggle.txt])
+
+#############################################################################################
+#####################
+#####################
+#####################
+#####################               UNSELECTED FAULT ANALYSIS 
+#####################
+#####################
+#####################
+#####################
+#############################################################################################
+set(var=[defines], report.mode=[new])
+
+faultset(name=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],method=[sff], input=[${SDENV_FSIM_FAULT_LIST_FILE}])
+coats(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_testability_${evcd_name}])
+
+
+unselected(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],
+        file=[$result_dir/unselected_fault_controllability.txt], sort=[controllability], control.best=[0])
+
+unselected(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],
+        file=[$result_dir/unselected_fault_observability_tot.txt], sort=[observability], observe.best=[0])
+
+
+unselected(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_testability_${evcd_name}],
+        file=[$result_dir/unselected_fault_observability_sorted_fault.txt], sort=[fault])
+
+set(var=[defines], report.mode=[old])
+#############################################################################################
+#####################
+#####################
+#####################
+#####################               FSIM 
+#####################
+#####################
+#####################
+#####################
+#############################################################################################
+deltst(result=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}])
+addtst(test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],
+dut.stim=[${SDENV_FSIM_ELABORATION_TOP_LEVEL_NAME},
+${SDENV_FSIM_EVCD_TOP_LEVEL_NAME}],
+stim.limit.mismatch=[100],
+fault.inject.time=[$STROBE_OFFSET],
+debug=[1],
+stimtype=[vcd], 
+limit.osc=[10],
+oscd=[all],   
+#fsdb.autoname.enable=[1],
+#dictionary.enable=[1],
+stim_options=[+vcd+clk+${SDENV_FSIM_ELABORATION_TOP_LEVEL_NAME}.clk,+vcd+priority+stimulus],
+stim.verify=[1],
+zdetect=[0], 
+stim=[${evcd_path}],
+
+toggle.file=[./__tests__/${SDENV_DESIGN}_testability_${evcd_name}/${SDENV_DESIGN}_testability_${evcd_name}.vtog] )
+
+
+# Invoke Fault Simulator 
+fsim(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],queue=[mytestqueue])
+
+#############################################################################################
+#####################
+#####################
+#####################
+#####################               PROBABILISTIC FAULT ANALYSIS 
+#####################
+#####################
+#####################
+#####################
+#############################################################################################
+
+pfa(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],
+    file=[$result_dir/probabilistic_fault_analysis_testable.txt],
+    style=[selected],
+    model=[all],
+    sort=[none],
+    toggle=[y])
+
+
+pfa(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],
+    file=[$result_dir/probabilistic_fault_analysis_untestable.txt],
+    style=[untest],
+    model=[all],
+    toggle=[y])
+
+# Report summaries 
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],collapseoff=[1],type=[coverage],group=[detail],file=[$result_dir/coverage_analysis.fr],queue=[mytestqueue])
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],collapseoff=[1],style=[summary],type=[coverage],file=[$result_dir/coverage_summary.txt],queue=[mytestqueue])
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],collapseoff=[1],style=[csv],type=[coverage],file=[$result_dir/coverage_summary],queue=[mytestqueue])
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],collapseoff=[1],type=[coverage],hierarchical=[1],file=[$result_dir/coverage_summary_hierarchical.txt],queue=[mytestqueue])
+#coverage (faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${evcd_name}],collapseoff=[1],type=[dictionary],file=[$result_dir/coverage_dictionary_long.txt],queue=[mytestqueue],style=[long])
+#coverage (faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${evcd_name}],collapseoff=[1],type=[dictionary],file=[$result_dir/coverage_dictionary_short.txt],queue=[mytestqueue])
+#coverage (faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${evcd_name}],collapseoff=[1],type=[dictionary],file=[$result_dir/coverage_dictionary_short_new.txt],queue=[mytestqueue],mode=[new])
+## dump the tetramax fault list 
+set(var=[defines], format=[tetramax])
+coverage(faultset=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_atpg_undetected_${evcd_name}],test=[${SDENV_DESIGN}_${SDENV_FAULT_MODEL}_${evcd_name}],collapseoff=[1],type=[coverage],group=[detail],file=[$result_dir/coverage_analysis_tmax.fau],queue=[mytestqueue])
