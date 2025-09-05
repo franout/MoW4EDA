@@ -25,6 +25,7 @@ synthesis/*
 
 
 application/
+!application/scripts/
 
 .vscode/
 *.vcd
