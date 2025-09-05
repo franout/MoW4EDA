@@ -23,7 +23,3 @@ echo "rm -rf ${MoW4EDA_ATPG_DIR}"
 rm -rf ${MoW4EDA_ATPG_DIR}
 
 ## TODO Add any additional clean up steps here
-
-echo "Cleaning power dir"
-echo "rm -rf ${sMoW4EDA_POWER_DIR}"
-rm -rf ${MoW4EDA_POWER_DIR}

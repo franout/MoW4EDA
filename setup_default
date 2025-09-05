@@ -12,7 +12,7 @@ export MoW4EDA_POWER_TOOL="pt"
 export MoW4EDA_SLACK_GENERATOR_TOOL="pt_shell"
 export MoW4EDA_SYN_TOOL="dc_shell"
 
-export MoW4EDA_DESIGN="systolic_array"
+export MoW4EDA_DESIGN="c6288"
 
 ## fault model tmax like
 ##("Stuck" "Iddq" "Transition" "Path_delay" "Bridging" "Dynamic_Bridging" "Dual_transition_Bridging" "Hold_time" "IDDQ_bridging")
@@ -75,6 +75,7 @@ export MoW4EDA_APPLICATION_SCRIPTS_DIR=${MoW4EDA_WORK_DIR}/application/scripts/
 export MoW4EDA_APPLICATION_OUTPUTS_DIR=${MoW4EDA_WORK_DIR}/application/outputs
 export MoW4EDA_APPLICATION_INTERNAL_RUNNER=${MoW4EDA_WORK_DIR}/application/scripts/application_internal_runner.sh
 export MoW4EDA_APPLICATION_RUN_DIR_LOG=${MoW4EDA_LOGS_DIR}/application/${MoW4EDA_DESIGN}
+export MoW4EDA_COMPILE_APPLICATION_LOG_DIR=${MoW4EDA_LOGS_DIR}/application/compile_logs/${MoW4EDA_DESIGN}
 export MoW4EDA_APPLICATION_COMPILE_SCRIPT=${MoW4EDA_APPLICATION_SCRIPTS_DIR}/compile_application.sh
 
 ## custom verilator-oriented 
@@ -163,25 +164,6 @@ echo "Creating folder ${MoW4EDA_FSIM_RESULTS_DIR}"
 mkdir -p ${MoW4EDA_FSIM_RESULTS_DIR}
 fi 
 
-
-if [[ ! -d "${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}" ]] ; then 
-echo "Creating folder ${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}"
-mkdir -p ${MoW4EDA_PLOT_TOOL_OUTPUT_DIR}
-fi 
-
-
-if [[ ! -L "${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR}" ]] ; then 
-echo "Linking ${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR} to ${MoW4EDA_ATPG_FAULT_LIST_DIR}"
-ln -s ${MoW4EDA_ATPG_FAULT_LIST_DIR} ${MoW4EDA_PLOT_FAULT_LIST_INPUTS_DIR} 
-fi 
-
-
-if [[ ! -d "${MoW4EDA_PLOT_LOG_DIR}" ]] ; then 
-echo "Creating folder ${MoW4EDA_PLOT_LOG_DIR}"
-mkdir -p ${MoW4EDA_PLOT_LOG_DIR}
-fi 
-
-
 if [[ ! -d "${MoW4EDA_SIMULATION_PATH_EVCD}" ]] ; then 
 echo "Creating folder ${MoW4EDA_SIMULATION_PATH_EVCD}"
 mkdir -p ${MoW4EDA_SIMULATION_PATH_EVCD}
@@ -267,11 +249,6 @@ echo "Creating folder ${MoW4EDA_ATPG_DIR}"
 mkdir -p ${MoW4EDA_ATPG_DIR}
 fi 
 
-
-if [[ ! -d "${MoW4EDA_POWER_DIR}" ]] ; then 
-echo "Creating folder ${MoW4EDA_POWER_DIR}"
-mkdir -p ${MoW4EDA_POWER_DIR}
-fi 
 
 # For seeing the creation of the folder 
 sleep 1
